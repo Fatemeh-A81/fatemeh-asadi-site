@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>حل مسئله تخصیص | فاطمه اسدی</title>
+  <style>
+    :root{
+      --bg:#0b1020; --card:#111a33; --muted:#93a4c7; --text:#eaf0ff; --accent:#7aa2ff;
+      --good:#70ffb0; --bad:#ff6b6b; --line:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Noto Sans Arabic", "Noto Sans", sans-serif;
+      background: radial-gradient(1200px 600px at 20% 10%, rgba(122,162,255,.25), transparent 60%),
+                  radial-gradient(1000px 500px at 90% 30%, rgba(112,255,176,.16), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{padding:28px 18px 10px; max-width:1100px; margin:0 auto;}
+    h1{margin:0 0 6px; font-size:28px; letter-spacing:.2px}
+    .sub{color:var(--muted); line-height:1.8; margin:0}
+    main{max-width:1100px; margin:0 auto; padding:18px;}
+    .grid{display:grid; grid-template-columns: 1.1fr .9fr; gap:14px;}
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr;}}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+    }
+    .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+    label{font-weight:600}
+    input[type="number"]{
+      background:rgba(0,0,0,.2);
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      width:120px;
+      outline:none;
+    }
+    textarea{
+      width:100%;
+      min-height:240px;
+      resize:vertical;
+      background:rgba(0,0,0,.2);
+      border:1px solid var(--line);
+      color:var(--text);
+      padding:12px 12px;
+      border-radius:14px;
+      outline:none;
+      line-height:1.9;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      direction:ltr; /* for numbers */
+      text-align:left;
+    }
+    .btn{
+      background: linear-gradient(135deg, rgba(122,162,255,.95), rgba(122,162,255,.65));
+      color:#071027;
+      border:none;
+      padding:12px 14px;
+      border-radius:14px;
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.2px;
+    }
+    .btn.secondary{
+      background:rgba(255,255,255,.08);
+      color:var(--text);
+      border:1px solid var(--line);
+      font-weight:700;
+    }
+    .btn:active{transform:translateY(1px)}
+    .hint{color:var(--muted); font-size:13px; line-height:1.9; margin-top:10px}
+    .error{color:var(--bad); font-weight:700; line-height:1.9}
+    .ok{color:var(--good); font-weight:700}
+    table{width:100%; border-collapse:collapse; overflow:hidden; border-radius:14px; border:1px solid var(--line);}
+    th,td{padding:10px 10px; border-bottom:1px solid var(--line); text-align:center; direction:ltr;}
+    th{background:rgba(255,255,255,.06); font-size:13px; color:var(--muted)}
+    tr:last-child td{border-bottom:none}
+    .kpi{display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-top:12px;}
+    @media (max-width: 520px){ .kpi{grid-template-columns:1fr;}}
+    .pill{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(0,0,0,.15);
+    }
+    .pill .t{color:var(--muted); font-size:12px; margin-bottom:6px}
+    .pill .v{font-size:18px; font-weight:900; direction:ltr; text-align:left}
+    footer{max-width:1100px; margin:0 auto; padding:0 18px 28px; color:var(--muted); font-size:12px;}
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    .small{font-size:12px; color:var(--muted)}
+    .split{display:grid; grid-template-columns: 1fr 1fr; gap:10px;}
+    @media (max-width: 520px){ .split{grid-template-columns:1fr;}}
+    .tag{display:inline-block; padding:4px 10px; border-radius:999px; border:1px solid var(--line); color:var(--muted); font-size:12px;}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="row" style="justify-content:space-between">
+      <div>
+        <h1>حل مسئله تخصیص (Assignment Problem) — فاطمه اسدی</h1>
+        <p class="sub">ماتریس هزینهٔ <span class="tag">n × n</span> را وارد کن و جواب بهینه (کمینه‌سازی) را با الگوریتم مجارستانی بگیر.</p>
+      </div>
+      <div class="small">کاملاً آفلاین • فقط HTML/JS</div>
+    </div>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <div class="row">
+        <label for="n">n (اختیاری)</label>
+        <input id="n" type="number" min="1" step="1" placeholder="مثلاً 4" />
+        <button class="btn secondary" id="fillExample">نمونه</button>
+        <button class="btn" id="solve">حل کن</button>
+      </div>
+
+      <div style="margin-top:12px">
+        <label for="matrix">ماتریس هزینه</label>
+        <textarea id="matrix" placeholder="اعداد را با فاصله یا ویرگول جدا کن. هر سطر در یک خط.
+مثال:
+9 2 7 8
+6 4 3 7
+5 8 1 8
+7 6 9 4"></textarea>
+        <div class="hint">
+          نکته‌ها: ۱) می‌تونی جداکننده را فاصله/ویرگول/Tab بذاری. ۲) اگر n را خالی بگذاری، از روی تعداد سطر/ستون تشخیص می‌دهم.
+        </div>
+        <div id="msg" style="margin-top:8px"></div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <h3 style="margin:0 0 10px">خروجی</h3>
+
+      <div class="kpi">
+        <div class="pill">
+          <div class="t">کمینهٔ هزینه</div>
+          <div class="v" id="minCost">—</div>
+        </div>
+        <div class="pill">
+          <div class="t">n</div>
+          <div class="v" id="nOut">—</div>
+        </div>
+        <div class="pill">
+          <div class="t">زمان اجرا (ms)</div>
+          <div class="v" id="timeMs">—</div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px" class="split">
+        <button class="btn secondary" id="copyResult">کپی نتیجه</button>
+        <button class="btn secondary" id="downloadJson">دانلود JSON</button>
+      </div>
+
+      <div style="margin-top:14px">
+        <div class="small" style="margin-bottom:8px">تخصیص بهینه (سطر → ستون):</div>
+        <div id="assignmentTable"></div>
+      </div>
+
+      <div style="margin-top:14px" class="small">
+        روش: Hungarian Algorithm (کمینه‌سازی) • پشتیبانی از اعداد اعشاری و منفی.
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    ساخته‌شده برای <b>فاطمه اسدی</b>. برای انتشار آنلاین می‌تونی همین پوشه را روی GitHub Pages یا Netlify آپلود کنی.
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
